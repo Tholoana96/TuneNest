@@ -6,18 +6,16 @@ export default function TrackCard({ track, onPlay, isPlaying, darkMode }) {
 
   return (
     <div
-      className={`p-4 flex items-center gap-4 rounded-xl transition-transform duration-300 transform hover:scale-105
-      ${
-        darkMode
-          ? "bg-white/10 backdrop-blur-md border border-white/20"
-          : "bg-white/60"
-      }`}>
+      className={`p-4 flex items-center gap-4 w-full rounded-xl transition-transform duration-300 transform hover:scale-105
+        ${
+          darkMode
+            ? "bg-white/10 backdrop-blur-md border border-white/20"
+            : "bg-white/60"
+        }`}>
       <img
         src={album.cover_medium}
         alt={title}
-        className={`w-20 h-20 object-cover rounded ${
-          isPlaying ? "playing" : ""
-        }`}
+        className="w-20 h-20 object-cover rounded"
       />
       <div className="flex-1">
         <div className="font-semibold">{title}</div>

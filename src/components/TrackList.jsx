@@ -1,7 +1,13 @@
 import React from "react";
 import TrackCard from "./TrackCard";
 
-export default function TrackList({ tracks, onPlay, currentId, darkMode }) {
+export default function TrackList({
+  tracks,
+  onPlay,
+  currentId,
+  darkMode,
+  audioRef,
+}) {
   if (!tracks?.length)
     return (
       <div className="mt-6">No results yet. Try searching for an artist.</div>
@@ -16,6 +22,7 @@ export default function TrackList({ tracks, onPlay, currentId, darkMode }) {
           onPlay={onPlay}
           isPlaying={currentId === t.id}
           darkMode={darkMode}
+          audioRef={audioRef}
         />
       ))}
     </div>
