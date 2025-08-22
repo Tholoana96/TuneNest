@@ -1,6 +1,3 @@
-# Node modules
-node_modules/
-
 # Build outputs
 dist/
 build/
@@ -34,3 +31,5 @@ Thumbs.db
 public/
 
 project-files/
+
+node_modules/
