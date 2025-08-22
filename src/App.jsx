@@ -17,7 +17,7 @@ export default function App() {
     setError(null);
     try {
       const res = await fetch(
-        `http://localhost:3001/search?q=${encodeURIComponent(query)}`
+        `/.netlify/functions/search?q=${encodeURIComponent(query)}`
       );
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
@@ -28,23 +28,6 @@ export default function App() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchTrending = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`http://localhost:3001/search?q=top`);
-        if (!res.ok) throw new Error("Failed to fetch trending");
-        const data = await res.json();
-        setTracks(data.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTrending();
-  }, []);
 
   const playTrack = (track) => {
     if (current?.id === track.id) {
@@ -67,77 +50,33 @@ export default function App() {
       className={`min-h-screen p-4 ${
         darkMode
           ? "bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white"
-          : "bg-gradient-to-b from-gray-200 via-gray-100 to-gray-50 text-gray-800"
+          : "bg-gray-200 text-gray-900"
       }`}>
-      <div className="w-full max-w-5xl mx-auto">
-        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+      <div className="w-full">
+        <header className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-3xl font-bold">TuneNest Music Player</h1>
             <p className="text-sm opacity-80">
               Nestled in sound, powered by you.
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm">
-              {darkMode ? "Dark Mode" : "Light Mode"}
-            </span>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={darkMode}
-                onChange={() => setDarkMode(!darkMode)}
-              />
-              <div
-                className={`w-11 h-6 rounded-full transition-colors duration-300 ${
-                  darkMode
-                    ? "bg-gray-800 peer-checked:bg-indigo-600"
-                    : "bg-gray-400 peer-checked:bg-indigo-600"
-                }`}
-              />
-              <div
-                className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ${
-                  darkMode ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </label>
-          </div>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="px-4 py-2 rounded bg-gray-700/30 hover:bg-gray-700/50">
+            {darkMode ? "Light Mode" : "Dark Mode"}
+          </button>
         </header>
 
-        {!tracks.length && !loading && !error && (
-          <div className="flex flex-col items-center justify-center mt-20 text-center gap-4">
-            <h2 className="text-4xl font-bold opacity-90">
-              Welcome to TuneNest
-            </h2>
-            <p className="text-lg opacity-70">
-              Nestled in sound, powered by you. Search for your favorite artists
-              and tracks to get started!
-            </p>
-            <div className="mt-6">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/727/727245.png"
-                alt="Music illustration"
-                className="w-40 opacity-50 animate-bounce"
-              />
-            </div>
-          </div>
-        )}
+        <SearchBar onSearch={search} />
+        {loading && <div className="mt-6">Loading…</div>}
+        {error && <div className="mt-6 text-red-400">{error}</div>}
 
-        <div className="mt-6">
-          <SearchBar onSearch={search} />
-        </div>
-
-        {loading && <div className="mt-6 text-center">Loading…</div>}
-        {error && <div className="mt-6 text-red-400 text-center">{error}</div>}
-
-        {tracks.length > 0 && (
-          <TrackList
-            tracks={tracks}
-            onPlay={playTrack}
-            currentId={current?.id}
-            darkMode={darkMode}
-          />
-        )}
+        <TrackList
+          tracks={tracks}
+          onPlay={playTrack}
+          currentId={current?.id}
+          darkMode={darkMode}
+        />
 
         <AudioPlayer audioRef={audioRef} track={current} />
       </div>
