@@ -54,12 +54,12 @@ export default function App() {
           ? "bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white"
           : "bg-gray-100 text-gray-900"
       }`}>
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full">
         <header className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold">Nexora Music Player</h1>
+            <h1 className="text-3xl font-bold">TuneNestMusic Player</h1>
             <p className="text-sm opacity-80">
-              Search & preview tracks using Deezer
+              Nestled in sound, powered by you.
             </p>
           </div>
           <button
