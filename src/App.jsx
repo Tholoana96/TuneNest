@@ -17,9 +17,7 @@ export default function App() {
     setError(null);
     try {
       const res = await fetch(
-        `https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=${encodeURIComponent(
-          query
-        )}`
+        `http://localhost:3001/search?q=${encodeURIComponent(query)}`
       );
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
@@ -57,7 +55,7 @@ export default function App() {
       <div className="w-full">
         <header className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold">TuneNestMusic Player</h1>
+            <h1 className="text-3xl font-bold">TuneNest Music Player</h1>
             <p className="text-sm opacity-80">
               Nestled in sound, powered by you.
             </p>
