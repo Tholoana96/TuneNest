@@ -73,9 +73,6 @@ export default function App() {
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <div>
             <h1 className="text-3xl font-bold">TuneNest Music Player</h1>
-            <p className="text-sm opacity-80">
-              Nestled in sound, powered by you.
-            </p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm">{darkMode ? "Dark" : "Light"}</span>
