@@ -35,23 +35,6 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-    const fetchTrending = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${getFunctionPath()}?q=top`);
-        if (!res.ok) throw new Error("Failed to fetch trending");
-        const data = await res.json();
-        setTracks(data.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTrending();
-  }, []);
-
   const playTrack = (track) => {
     if (current?.id === track.id) {
       if (audioRef.current.paused) audioRef.current.play();
