@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaPlay, FaPause, FaVolumeUp } from "react-icons/fa";
 
-export default function AudioPlayer({ audioRef, track }) {
+export default function AudioPlayer({ audioRef, track, darkMode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(1);
@@ -32,30 +32,25 @@ export default function AudioPlayer({ audioRef, track }) {
     }
   };
 
-  const handleProgressChange = (e) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = e.target.value * audioRef.current.duration;
-      setProgress(e.target.value);
-    }
-  };
-
-  const handleVolumeChange = (e) => setVolume(e.target.value);
-
   if (!track) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-black/70 backdrop-blur-md text-white p-3 flex flex-col md:flex-row items-center gap-3 z-50">
+    <div
+      className={`fixed bottom-0 left-0 w-full p-3 flex flex-col md:flex-row items-center gap-3 z-50
+        ${
+          darkMode
+            ? "bg-black/70 text-white backdrop-blur-md"
+            : "bg-white/80 text-gray-900 backdrop-blur-md"
+        }`}>
       <div className="flex items-center gap-4 w-full md:w-auto">
         <img
           src={track.album.cover_small}
           alt={track.title}
-          className="w-12 h-12 object-cover rounded"
+          className="w-20 h-20 object-cover rounded"
         />
         <div className="overflow-hidden">
           <div className="font-semibold truncate">{track.title}</div>
-          <div className="text-sm text-gray-300 truncate">
-            {track.artist.name}
-          </div>
+          <div className="text-sm truncate">{track.artist.name}</div>
         </div>
         <button
           onClick={togglePlay}
@@ -71,8 +66,18 @@ export default function AudioPlayer({ audioRef, track }) {
           max="1"
           step="0.01"
           value={progress}
-          onChange={handleProgressChange}
-          className="w-full h-1 rounded-lg bg-gray-600 accent-indigo-500 cursor-pointer"
+          onChange={(e) => {
+            if (audioRef.current) {
+              audioRef.current.currentTime =
+                e.target.value * audioRef.current.duration;
+              setProgress(e.target.value);
+            }
+          }}
+          className={`w-full h-1 rounded-lg cursor-pointer ${
+            darkMode
+              ? "bg-gray-600 accent-indigo-500"
+              : "bg-gray-300 accent-indigo-700"
+          }`}
         />
         <div className="flex items-center gap-1">
           <FaVolumeUp />
@@ -82,8 +87,12 @@ export default function AudioPlayer({ audioRef, track }) {
             max="1"
             step="0.01"
             value={volume}
-            onChange={handleVolumeChange}
-            className="w-20 h-1 rounded-lg bg-gray-600 accent-indigo-500 cursor-pointer"
+            onChange={(e) => setVolume(e.target.value)}
+            className={`w-20 h-1 rounded-lg cursor-pointer ${
+              darkMode
+                ? "bg-gray-600 accent-indigo-500"
+                : "bg-gray-300 accent-indigo-700"
+            }`}
           />
         </div>
       </div>
