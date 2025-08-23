@@ -62,17 +62,26 @@ export default function App() {
     }
   }, [current]);
 
+  const goHome = () => {
+    setTracks([]);
+    setCurrent(null);
+    setError(null);
+    setLoading(false);
+  };
+
   return (
     <div
       className={`min-h-screen p-4 ${
         darkMode
-          ? "bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white"
+          ? "bg-gradient-to-b from-purple-950 via-indigo-950 to-black text-white"
           : "bg-gradient-to-b from-gray-200 via-gray-100 to-gray-50 text-gray-800"
       }`}>
       <div className="w-full max-w-5xl mx-auto">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <div>
-            <h1 className="text-3xl font-bold">TuneNest Music Player</h1>
+            <h1 className="text-3xl font-bold cursor-pointer" onClick={goHome}>
+              TuneNest Music Player
+            </h1>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm">{darkMode ? "Dark" : "Light"}</span>

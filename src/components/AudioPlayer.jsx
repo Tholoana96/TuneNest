@@ -1,105 +1,94 @@
-import React, { useEffect, useState } from "react";
-import {
-  FaPlay,
-  FaPause,
-  FaForward,
-  FaBackward,
-  FaVolumeUp,
-} from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaPlay, FaPause, FaVolumeUp } from "react-icons/fa";
 
 export default function AudioPlayer({ audioRef, track }) {
-  const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(1);
 
   useEffect(() => {
+    if (!audioRef.current) return;
+
     const audio = audioRef.current;
-    if (!audio) return;
+    const updateProgress = () =>
+      setProgress(audio.currentTime / audio.duration || 0);
+    audio.addEventListener("timeupdate", updateProgress);
+    audio.addEventListener("ended", () => setIsPlaying(false));
+    return () => audio.removeEventListener("timeupdate", updateProgress);
+  }, [audioRef]);
 
-    const onTimeUpdate = () =>
-      setProgress(audio.currentTime / (audio.duration || 1));
-    audio.addEventListener("timeupdate", onTimeUpdate);
-
-    const onPlay = () => setIsPlaying(true);
-    const onPause = () => setIsPlaying(false);
-
-    audio.addEventListener("play", onPlay);
-    audio.addEventListener("pause", onPause);
-
-    return () => {
-      audio.removeEventListener("timeupdate", onTimeUpdate);
-      audio.removeEventListener("play", onPlay);
-      audio.removeEventListener("pause", onPause);
-    };
-  }, [audioRef, track]);
-
-  if (!track) return null;
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume;
+  }, [volume, audioRef]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
-    if (audioRef.current.paused) audioRef.current.play();
-    else audioRef.current.pause();
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
   };
 
-  const rewind = () => {
-    if (audioRef.current) audioRef.current.currentTime -= 5;
+  const handleProgressChange = (e) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = e.target.value * audioRef.current.duration;
+      setProgress(e.target.value);
+    }
   };
 
-  const forward = () => {
-    if (audioRef.current) audioRef.current.currentTime += 5;
-  };
+  const handleVolumeChange = (e) => setVolume(e.target.value);
 
-  const handleVolumeChange = (e) => {
-    const vol = parseFloat(e.target.value);
-    setVolume(vol);
-    if (audioRef.current) audioRef.current.volume = vol;
-  };
+  if (!track) return null;
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-11/12 md:w-3/4 bg-white/10 backdrop-blur-md p-3 rounded-xl shadow-lg flex flex-col sm:flex-row items-center gap-3">
-      <img src={track.album.cover_small} className="w-12 h-12 rounded" alt="" />
-      <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div>
-          <div className="font-semibold">{track.title}</div>
-          <div className="text-sm opacity-70">{track.artist.name}</div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={rewind}
-            className="p-2 bg-indigo-600 rounded hover:bg-indigo-500">
-            <FaBackward />
-          </button>
-          <button
-            onClick={togglePlay}
-            className="p-2 bg-indigo-600 rounded hover:bg-indigo-500">
-            {isPlaying ? <FaPause /> : <FaPlay />}
-          </button>
-          <button
-            onClick={forward}
-            className="p-2 bg-indigo-600 rounded hover:bg-indigo-500">
-            <FaForward />
-          </button>
-          <div className="flex items-center gap-1">
-            <FaVolumeUp />
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="w-24"
-            />
+    <div className="fixed bottom-0 left-0 w-full bg-black/70 backdrop-blur-md text-white p-3 flex flex-col md:flex-row items-center gap-3 z-50">
+      <div className="flex items-center gap-4 w-full md:w-auto">
+        <img
+          src={track.album.cover_small}
+          alt={track.title}
+          className="w-12 h-12 object-cover rounded"
+        />
+        <div className="overflow-hidden">
+          <div className="font-semibold truncate">{track.title}</div>
+          <div className="text-sm text-gray-300 truncate">
+            {track.artist.name}
           </div>
         </div>
+        <button
+          onClick={togglePlay}
+          className="p-3 bg-indigo-600 rounded hover:bg-indigo-500 ml-2">
+          {isPlaying ? <FaPause /> : <FaPlay />}
+        </button>
       </div>
-      <div className="mt-2 sm:mt-0 h-2 bg-white/10 rounded overflow-hidden w-full">
-        <div
-          className="h-full bg-indigo-500"
-          style={{ width: `${progress * 100}%` }}
+
+      <div className="flex-1 w-full md:ml-6 flex items-center gap-3">
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={progress}
+          onChange={handleProgressChange}
+          className="w-full h-1 rounded-lg bg-gray-600 accent-indigo-500 cursor-pointer"
         />
+        <div className="flex items-center gap-1">
+          <FaVolumeUp />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={handleVolumeChange}
+            className="w-20 h-1 rounded-lg bg-gray-600 accent-indigo-500 cursor-pointer"
+          />
+        </div>
       </div>
-      <audio ref={audioRef} />
+
+      <audio ref={audioRef} src={track.preview} />
     </div>
   );
 }

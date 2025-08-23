@@ -6,20 +6,26 @@ export default function TrackCard({ track, onPlay, isPlaying, darkMode }) {
 
   return (
     <div
-      className={`p-4 flex items-center gap-4 w-full rounded-xl transition-transform duration-300 transform hover:scale-105
-        ${
-          darkMode
-            ? "bg-white/10 backdrop-blur-md border border-white/20"
-            : "bg-white/60"
-        }`}>
+      className={`w-full grid grid-cols-[80px_1fr_auto] items-center gap-4 py-2 px-1 transition-transform duration-300 transform hover:scale-105 hover:shadow-[0_0_15px_rgba(128,0,255,0.5)]
+        ${darkMode ? "bg-transparent" : "bg-white/60"}`}>
       <img
         src={album.cover_medium}
-        alt={title}
+        alt={track.title}
         className="w-20 h-20 object-cover rounded"
       />
-      <div className="flex-1">
-        <div className="font-semibold">{title}</div>
-        <div className="text-sm opacity-70">{artist.name}</div>
+      <div className="overflow-hidden">
+        <div
+          className={`font-semibold truncate ${
+            darkMode ? "text-white" : "text-gray-900"
+          }`}>
+          {title}
+        </div>
+        <div
+          className={`text-sm truncate ${
+            darkMode ? "text-gray-300" : "text-gray-700"
+          }`}>
+          {artist.name}
+        </div>
       </div>
       <button
         onClick={() => onPlay(track)}
