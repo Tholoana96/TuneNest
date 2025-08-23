@@ -11,13 +11,19 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(true);
   const audioRef = useRef(null);
 
+  const getFunctionPath = () => {
+    return import.meta.env.MODE === "development"
+      ? "/.netlify/functions/search"
+      : "/functions/search";
+  };
+
   const search = async (query) => {
     if (!query) return;
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(
-        `/.netlify/functions/search?q=${encodeURIComponent(query)}`
+        `${getFunctionPath()}?q=${encodeURIComponent(query)}`
       );
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
@@ -33,7 +39,7 @@ export default function App() {
     const fetchTrending = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/.netlify/functions/search?q=top`);
+        const res = await fetch(`${getFunctionPath()}?q=top`);
         if (!res.ok) throw new Error("Failed to fetch trending");
         const data = await res.json();
         setTracks(data.data);
@@ -143,7 +149,7 @@ export default function App() {
           />
         )}
 
-        <AudioPlayer audioRef={audioRef} track={current} />
+        <AudioPlayer audioRef={audioRef} track={current} darkMode={darkMode} />
       </div>
     </div>
   );
