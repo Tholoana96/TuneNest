@@ -11,10 +11,9 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(true);
   const audioRef = useRef(null);
 
+  // ✅ Always correct Netlify function path
   const getFunctionPath = () => {
-    return import.meta.env.MODE === "development"
-      ? "/.netlify/functions/search"
-      : "/functions/search";
+    return "/.netlify/functions/search";
   };
 
   const search = async (query) => {
@@ -25,9 +24,9 @@ export default function App() {
       const res = await fetch(
         `${getFunctionPath()}?q=${encodeURIComponent(query)}`
       );
-      if (!res.ok) throw new Error("Failed to fetch");
+      if (!res.ok) throw new Error("Failed to fetch songs");
       const data = await res.json();
-      setTracks(data.data);
+      setTracks(data.data || []);
     } catch (err) {
       setError(err.message);
     } finally {
