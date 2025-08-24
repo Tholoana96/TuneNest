@@ -11,10 +11,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(true);
   const audioRef = useRef(null);
 
-  // ✅ Always correct Netlify function path
-  const getFunctionPath = () => {
-    return "/.netlify/functions/search";
-  };
+  const getFunctionPath = () => "/.netlify/functions/search";
 
   const search = async (query) => {
     if (!query) return;
@@ -116,7 +113,7 @@ export default function App() {
         )}
 
         <div className="mt-6">
-          <SearchBar onSearch={search} />
+          <SearchBar onSearch={search} darkMode={darkMode} />
         </div>
 
         {loading && <div className="mt-6 text-center">Loading…</div>}
