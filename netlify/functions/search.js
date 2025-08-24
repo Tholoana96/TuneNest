@@ -1,8 +1,6 @@
-import fetch from "node-fetch";
-
+// netlify/functions/search.js
 export async function handler(event) {
   const q = event.queryStringParameters?.q;
-
   if (!q) {
     return {
       statusCode: 400,
@@ -14,22 +12,11 @@ export async function handler(event) {
     const response = await fetch(
       `https://api.deezer.com/search?q=${encodeURIComponent(q)}`
     );
-
-    if (!response.ok) {
-      return {
-        statusCode: response.status,
-        body: JSON.stringify({ error: "Failed to fetch from Deezer" }),
-      };
-    }
-
     const data = await response.json();
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     };
   } catch (err) {
